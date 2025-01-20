@@ -245,4 +245,4 @@ ENTRYPOINT ["dotnet", "StockDataFetcher.dll"]`
       - ASPNETCORE_ENVIRONMENT=Development`
 
 ### Линк до веб страната: https://msestocks20250120013934.azurewebsites.net/
-[Watch Categories Video](https://drive.google.com/file/d/1h2NreRUuteuD7xRVqOR3O6YFQ42kbSAI/view?usp=sharing)
+[Линк до видеото](https://drive.google.com/file/d/1h2NreRUuteuD7xRVqOR3O6YFQ42kbSAI/view?usp=sharing)
