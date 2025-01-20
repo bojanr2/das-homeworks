@@ -220,7 +220,7 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "StockDataFetcher.dll"]`
 
-###Docker Compose датотека
+## Docker Compose датотека
 `version: '3.8'`
 
 `services:
