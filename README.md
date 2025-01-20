@@ -169,4 +169,77 @@ DataFetcher е уште една класа на Singleton што се кори�
 - **Response**:
   - Во случај на успех, враќа листа со кодови во JSON формат.
   - Во случај на грешка, враќа соодветна порака за грешка и HTTP статус код
- 
+
+## Контеjнеризациjа и инсталациjа во облак
+Dockerfile за IssuerCodeFetcher
+
+`FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443`
+
+
+`FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["IssuerCodeFetcher.csproj", "."]
+RUN dotnet restore
+COPY . .
+RUN dotnet build -c Release -o /app/build`
+
+
+`FROM build AS publish
+RUN dotnet publish -c Release -o /app/publish`
+
+`FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "IssuerCodeFetcher.dll"]`
+
+Dockerfile за StockDataFetcher
+
+`FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443`
+
+
+`FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["StockDataFetcher.csproj", "."]
+RUN dotnet restore
+COPY . .
+RUN dotnet build -c Release -o /app/build`
+
+
+`FROM build AS publish
+RUN dotnet publish -c Release -o /app/publish`
+
+
+`FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "StockDataFetcher.dll"]`
+
+###Docker Compose датотека
+`version: '3.8'`
+
+`services:
+  issuercodefetcher:
+    image: issuercodefetcher
+    build:
+      context: ./IssuerCodeFetcher
+      dockerfile: Dockerfile
+    ports:
+      - "5001:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development`
+
+  `stockdatafetcher:
+    image: stockdatafetcher
+    build:
+      context: ./StockDataFetcher
+      dockerfile: Dockerfile
+    ports:
+      - "5002:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development`
